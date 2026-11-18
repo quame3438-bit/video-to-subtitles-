@@ -35,7 +35,7 @@
 <div class="hint" style="margin-top:14px">字幕保存在当前浏览器；建议完成后导出。刷新后可恢复上次字幕，视频需要重新选择。原视频声音识别为同语言字幕，此页不提供翻译。</div>
 </section>
 <details class="card"><summary>使用说明与隐私</summary><p class="hint">① 选择腾讯云或 OpenAI，输入原来的接口密码并检查连接。② 选择本地文件和识别语言。③ 开始识别，完成后导出 SRT，导入你的听力播放器即可。</p><p class="hint">勾选自动转音频后，只上传提取的音频，原视频用于本机预览。普通 M4A 音轨直接分段，其他支持的音频格式会在本机解码为 WAV 后分段；长音频在手机上可能较耗内存，建议用电脑。分段处可能截断连续语句，完成后可检查修改。特殊编码或分片视频可能不支持。文件会临时上传云端供所选服务读取，成功查询到完成或失败状态时尝试删除。若中途关闭网页，请在 23 小时内回来继续查询，以便取回结果和触发清理。OpenAI 完成识别后立即尝试删除媒体文件，结果回执在取回结果后清理；提交中断时可用“继续查询上次任务”恢复。视频保留在本机的预览不等于云端上传。</p><p class="hint">“暂停查询”只停止网页轮询，不会撤销腾讯云已提交的识别任务或相关费用。上传中停止会中断上传。点击“余额 / 额度与充值”的快捷入口可进入官方后台查看，网页不读取或推测实际余额。</p><p class="hint">OpenAI 配置：在 <a href="https://supabase.com/dashboard/project/braarnzywbodyfdclodc/functions/secrets" target="_blank" rel="noopener noreferrer">Supabase 项目 Secrets</a> 中添加 OPENAI_API_KEY，值填你自己的 OpenAI API 密钥。不要写进 HTML；此页只填写原来的接口密码。检查连接只确认配置，不验证余额，也不提交识别任务。</p><p class="hint">OpenAI 当前采用 whisper-1 获取真实时间轴。官方计划于 2027年2月26日停用该模型，届时需要更新后台识别方案，不能保证永久免维护。</p><button id="clear">清除本机字幕记录</button></details>
-<div class="footer">腾讯云 / OpenAI 字幕识别 · 双服务版 2026.11.18</div>
+<div class="footer">腾讯云 / OpenAI 字幕识别 · 双服务版 2026.11.18 · 上传修复版 1132</div>
 </main>
 <script>
 'use strict';
@@ -83,20 +83,16 @@ $('file').onchange=()=>{
 };
 function xhr(method,url,headers,body,signal,onProgress){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();uploadXhr=x;x.open(method,url);x.timeout=15*60*1000;Object.entries(headers).forEach(([k,v])=>x.setRequestHeader(k,v));const abort=()=>x.abort();signal.addEventListener('abort',abort,{once:true});const done=()=>{signal.removeEventListener('abort',abort);if(uploadXhr===x)uploadXhr=null};x.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(e.loaded,e.total)};x.onload=()=>{done();if(x.status>=200&&x.status<300)resolve(x);else{let msg='';try{const d=JSON.parse(x.responseText);msg=d.message||d.error||''}catch{}reject(new Error('上传失败（'+x.status+'）'+(msg?'：'+msg:'')))}};x.onerror=()=>{done();reject(new Error('上传网络中断，请检查网络后重试'))};x.ontimeout=()=>{done();reject(new Error('上传超时，请使用较小的视频或提取后的音频'))};x.onabort=()=>{done();reject(new DOMException('已暂停','AbortError'))};if(signal.aborted){x.abort();done();reject(new DOMException('已暂停','AbortError'));return}x.send(body)})}
 async function upload(f,p,signal){
-  const pct=n=>{progress(n);status('正在上传文件… '+Math.floor(n)+'%\n请保持网页打开。')};
-  if(f.size<=6*1024*1024){await xhr('PUT',p.uploadUrl,{'Content-Type':f.type||'application/octet-stream'},f,signal,(n,t)=>pct(n/t*100));return}
-  const metadata={bucketName:p.bucket,objectName:p.path,contentType:f.type||'application/octet-stream',cacheControl:'3600'};
-  const meta=Object.entries(metadata).map(([k,v])=>k+' '+btoa(v)).join(',');
-  const headers={'Tus-Resumable':'1.0.0','x-signature':p.token};
-  const created=await xhr('POST',p.tusEndpoint,{...headers,'Upload-Length':String(f.size),'Upload-Metadata':meta},null,signal);
-  const location=created.getResponseHeader('Location');if(!location)throw new Error('上传服务未返回续传地址');
-  const target=new URL(location,p.tusEndpoint);if(!target.hostname.endsWith('.supabase.co')||target.protocol!=='https:')throw new Error('上传地址无效');
-  let offset=Number(created.getResponseHeader('Upload-Offset')||0);
-  while(offset<f.size){const chunk=f.slice(offset,Math.min(f.size,offset+6*1024*1024));let ok=false;for(let retry=0;retry<3&&!ok;retry++){
-    try{const sent=await xhr('PATCH',target.href,{...headers,'Content-Type':'application/offset+octet-stream','Upload-Offset':String(offset)},chunk,signal,n=>pct((offset+n)/f.size*100));const next=Number(sent.getResponseHeader('Upload-Offset'));if(!Number.isFinite(next)||next<=offset||next>f.size)throw new Error('上传进度无效');offset=next;ok=true}
-    catch(e){if(e.name==='AbortError'||retry===2)throw e;await wait(1200,signal);const head=await xhr('HEAD',target.href,headers,null,signal);const current=Number(head.getResponseHeader('Upload-Offset'));if(!Number.isFinite(current)||current<offset||current>f.size)throw new Error('无法恢复上传进度');if(current>offset){offset=current;ok=true}}
-  }pct(offset/f.size*100)}
+  // Use signed PUT; the resumable endpoint rejects this project's upload credentials.
+  if(!p.uploadUrl)throw new Error('后台没有返回有效上传地址，请重新检查连接');
+  const target=new URL(p.uploadUrl);
+  if(target.protocol!=='https:'||!target.hostname.endsWith('.supabase.co'))throw new Error('上传地址无效');
+  progress(0);status('正在上传音频… 0%\n请保持网页打开。');
+  await xhr('PUT',target.href,{'Content-Type':f.type||'application/octet-stream'},f,signal,(n,t)=>{
+    const percent=n/t*100;progress(percent);status('正在上传音频… '+Math.floor(percent)+'%\n请保持网页打开。');
+  });
 }
+
 function wait(ms,signal){return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(new DOMException('已暂停','AbortError'))};const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve()},ms);if(signal.aborted)return abort();signal.addEventListener('abort',abort,{once:true})})}
 function finishResult(d,name){if(!Array.isArray(d.cues))throw new Error('后台没有返回字幕数组');cues=d.cues;baseName=name;job=null;remove(KEY+'_job');render();progress(100);status(cues.length?'识别完成，共 '+cues.length+' 条字幕，可以导出 SRT。'+(d.cleaned===false?'\n临时媒体清理失败，请检查云端存储。':''):'识别完成，但未检测到有效说话声。')}
 async function poll(signal,id){
