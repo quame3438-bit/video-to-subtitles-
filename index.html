@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>视频字幕识别 · 腾讯云 / OpenAI</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#172c39;background:#f3f6f6;--green:#087f76;--line:#dce5e5}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:auto;padding:32px 18px 70px}header{margin-bottom:25px}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--green);font-weight:700}h1{font-size:30px;margin:10px 0}p{color:#63767c;line-height:1.7;margin:8px 0}.top{display:flex;justify-content:space-between;gap:15px;align-items:center}.tag{font-size:12px;padding:8px 10px;border-radius:20px;background:#e0eeeb;color:#236960;white-space:nowrap}.card{background:white;border:1px solid var(--line);padding:23px;border-radius:18px;margin:16px 0;box-shadow:0 6px 24px #193b3505}h2{font-size:18px;margin:0 0 18px}.step{display:inline-grid;place-items:center;background:#e7f3f0;color:var(--green);border-radius:8px;width:28px;height:28px;margin-right:9px;font-size:14px}label{font-size:14px;font-weight:600;display:block;margin:15px 0 8px}input,select,textarea,button{font:inherit}input[type=password],select,textarea{width:100%;border:1px solid #ccd9d9;border-radius:10px;background:#fff;padding:12px;color:inherit;font-size:16px}input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #a6dad3;outline-offset:2px}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.row>*{min-width:0}.grow{flex:1}button,.pick{border:0;padding:12px 18px;border-radius:10px;cursor:pointer;background:#eaf0f0;color:#243d48;font-weight:600;min-height:46px}button.primary{background:var(--green);color:#fff}button:disabled{opacity:.45;cursor:default}.pick{display:block;text-align:center;border:1px dashed #9ebdb8;background:#f3f9f7;padding:27px 15px;margin:0}.pick strong{font-size:18px;display:block;margin-bottom:8px}.hint{font-size:13px;color:#6a7c82;line-height:1.7}.filename{overflow-wrap:anywhere;margin:12px 0;font-size:14px}.status{padding:15px;background:#eff6f5;border-radius:10px;line-height:1.6;white-space:pre-wrap;font-size:14px;margin-top:16px}.status.error{background:#fff0ed;color:#a53525}progress{width:100%;height:7px;accent-color:var(--green);display:block;margin-top:13px}video{width:100%;max-height:390px;background:#17282d;border-radius:12px;margin-top:12px}video[hidden],[hidden]{display:none!important}#caption{font-size:19px;text-align:center;line-height:1.6;white-space:pre-wrap;min-height:70px;background:#f3f7f7;border-radius:10px;padding:15px;margin:12px 0}summary{cursor:pointer;font-size:14px;color:#52716f}details{margin-top:15px}#srt{min-height:290px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px;line-height:1.6;resize:vertical;margin-top:15px}.tablewrap{overflow:auto;max-height:420px;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;font-size:14px}th{background:#f0f5f4;text-align:left;position:sticky;top:0}th,td{padding:12px;border-bottom:1px solid #e6eded;vertical-align:top}td:nth-child(2){white-space:nowrap;color:#6b7f84;font-size:12px}tbody tr{cursor:pointer}tbody tr.active{background:#e8f6f1}td textarea{min-height:65px;padding:7px;font-size:15px;resize:vertical}.footer{text-align:center;color:#788b8d;font-size:12px;margin-top:23px}#file{position:absolute;width:1px;height:1px;opacity:0}.stats{font-size:13px;color:#66837b}#resume{margin-top:12px}#remember{accent-color:var(--green)}.inline{display:flex;align-items:center;gap:7px;font-weight:400;margin:9px 0}.smallbuttons button{font-size:14px;padding:10px 13px}@media(max-width:540px){main{padding:22px 12px 50px}.card{padding:17px}h1{font-size:25px}.top{align-items:flex-start}.top .tag{display:none}.actions>*{flex:1}.row.two>*{flex:1 1 100%}td,th{padding:9px}td:nth-child(2){font-size:11px}.stats{display:block;margin:10px 0}}
+.accountgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.account{border:1px solid var(--line);border-radius:12px;padding:15px}.links{margin:13px 0;gap:8px}.links a{display:inline-block;padding:10px 12px;background:#eaf4f1;border-radius:8px;text-decoration:none;color:#166d64;font-size:14px;font-weight:600}.links a:focus-visible{outline:3px solid #a6dad3}@media(max-width:600px){.accountgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">TENCENT CLOUD / OPENAI · SUBTITLES</div><div class="top"><h1>视频字幕识别</h1><span class="tag">独立使用 · 支持英文</span></div><p>视频先转音频，再生成带时间轴的字幕，直接导出 SRT。</p></header>
+<section class="card"><h2><span class="step">1</span>选择识别服务</h2>
+<label for="provider">识别服务</label><select id="provider"><option value="tencent">腾讯云 · 普通录音文件识别</option><option value="openai">OpenAI · 带时间轴字幕识别</option></select><div id="providerHint" class="hint" style="margin-top:8px"></div><label for="password">接口密码（两种服务共用）</label><div class="row"><input class="grow" id="password" type="password" autocomplete="current-password" placeholder="以前“语音转文字”网页的接口密码"><button id="check">检查连接</button></div>
+<label class="inline"><input type="checkbox" id="remember">在本机记住接口密码</label><div class="hint">使用原来的接口密码，不需要填写腾讯云 SecretId 或 SecretKey。</div><div id="connection" class="hint" role="status"></div>
+</section>
+<section class="card"><h2>余额 / 额度与充值</h2><div class="accountgrid"><div class="account"><strong>腾讯云</strong><div class="row links"><a target="_blank" rel="noopener noreferrer" href="https://console.cloud.tencent.com/asr/resourcebundle">查看剩余识别时长</a><a target="_blank" rel="noopener noreferrer" href="https://buy.cloud.tencent.com/asr">购买识别资源包</a><a target="_blank" rel="noopener noreferrer" href="https://console.cloud.tencent.com/expense/overview">账户余额 / 充值</a></div><div class="hint">识别时长和账户现金余额是两项；本页使用普通录音文件识别。</div></div><div class="account"><strong>OpenAI API</strong><div class="row links"><a target="_blank" rel="noopener noreferrer" href="https://platform.openai.com/settings/organization/billing/overview">查看 API 余额</a><a target="_blank" rel="noopener noreferrer" href="https://platform.openai.com/settings/organization/billing/overview">充值 / 购买额度</a><a target="_blank" rel="noopener noreferrer" href="https://platform.openai.com/usage">查看使用费用</a></div><div class="hint">进入后选择与后台 API 密钥相同的组织。API 余额与 ChatGPT Plus 分开。</div></div></div><div class="hint" style="margin-top:12px">点击后在新标签页打开官方后台，可能需要登录。本页不显示实时余额；以官方后台数字为准。</div></section>
+<section class="card"><h2><span class="step">2</span>选择文件并识别</h2>
+<label class="pick" for="file"><strong>＋ 选择视频 / 音频</strong><span class="hint">MP4 · M4A · MP3 · WAV · AAC · FLAC 等</span></label><input id="file" type="file" accept="video/*,audio/*,.mp4,.m4a,.mp3,.wav,.aac,.flac,.flv,.wma,.3gp,.amr,.ogg,.webm,.mpeg,.mpga,.mov,.m4v">
+<div id="fileInfo" class="filename">还没有选择文件</div>
+<label class="inline"><input type="checkbox" id="autoAudio" checked>识别前自动转为音频（推荐）</label>
+<div class="row smallbuttons"><button id="convertAudio">仅转为音频</button><button id="downloadAudio" disabled>下载音频</button></div>
+<div id="audioInfo" class="hint" style="margin-top:10px">支持普通 MP4 / MOV / M4V，在本机快速提取音轨，无需播放完整视频。音频文件直接使用。</div>
+<div class="row two"><div class="grow"><label for="language">识别语言</label><select id="language"><option value="en">英文 → 英文字幕</option><option value="zh">中文 → 中文字幕</option></select></div><div class="grow"><label>识别方式</label><div id="engineHint" class="hint"></div></div></div>
+<div class="row actions" style="margin-top:20px"><button id="start" class="primary">开始识别字幕</button><button id="pause" hidden>暂停查询</button></div>
+<button id="resume" hidden>继续上次任务</button><div id="batchInfo" class="hint" style="margin-top:10px">OpenAI 超过25MB会自动分段，逐段识别后合并为一个 SRT。原视频不变。</div>
+<progress id="progress" hidden max="100" value="0"></progress><div id="status" class="status" role="status" aria-live="polite">准备好文件后，点击“开始识别字幕”。</div>
+<div class="hint" style="margin-top:10px">腾讯云：单文件上限 1GB、5小时。OpenAI：超过25MB自动分为每段不超过24MB的有效音频文件，逐段识别并合并字幕；长音频可能分为多段。实际上传还受云端配置限制。识别期间请保持网页打开。腾讯云按实际免费额度抵扣；OpenAI 使用 API 额度单独收费。</div>
+</section>
+<section id="results" class="card"><div class="top"><h2 style="margin:0"><span class="step">3</span>预览与导出</h2><span id="count" class="stats">尚未生成字幕</span></div>
+<video id="media" controls playsinline preload="metadata" hidden></video><div id="caption">识别完成后，字幕会显示在这里。</div>
+<div class="row actions"><button class="primary" id="exportSrt" disabled>导出 SRT 字幕</button><button id="exportTxt" disabled>导出纯文字</button><button id="copy" disabled>复制 SRT</button></div>
+<div id="tablewrap" class="tablewrap" style="margin-top:16px" hidden><table><thead><tr><th style="width:45px">#</th><th style="width:155px">起止时间</th><th>字幕文字（可修改）</th></tr></thead><tbody id="rows"></tbody></table></div>
+<details id="editor"><summary>查看 / 编辑完整 SRT</summary><textarea id="srt" aria-label="完整 SRT 字幕" placeholder="这里显示带时间轴的 SRT 字幕"></textarea><div class="row smallbuttons" style="margin-top:10px"><button id="apply">应用 SRT 修改</button><label class="pick" style="padding:9px 13px;border-style:solid;font-size:14px" for="importSrt">导入已有 SRT</label><input id="importSrt" type="file" accept=".srt,.vtt,text/plain" hidden></div></details>
+<div class="hint" style="margin-top:14px">字幕保存在当前浏览器；建议完成后导出。刷新后可恢复上次字幕，视频需要重新选择。原视频声音识别为同语言字幕，此页不提供翻译。</div>
+</section>
+<details class="card"><summary>使用说明与隐私</summary><p class="hint">① 选择腾讯云或 OpenAI，输入原来的接口密码并检查连接。② 选择本地文件和识别语言。③ 开始识别，完成后导出 SRT，导入你的听力播放器即可。</p><p class="hint">勾选自动转音频后，只上传提取的音频，原视频用于本机预览。普通 M4A 音轨直接分段，其他支持的音频格式会在本机解码为 WAV 后分段；长音频在手机上可能较耗内存，建议用电脑。分段处可能截断连续语句，完成后可检查修改。特殊编码或分片视频可能不支持。文件会临时上传云端供所选服务读取，成功查询到完成或失败状态时尝试删除。若中途关闭网页，请在 23 小时内回来继续查询，以便取回结果和触发清理。OpenAI 完成识别后立即尝试删除媒体文件，结果回执在取回结果后清理；提交中断时可用“继续查询上次任务”恢复。视频保留在本机的预览不等于云端上传。</p><p class="hint">“暂停查询”只停止网页轮询，不会撤销腾讯云已提交的识别任务或相关费用。上传中停止会中断上传。点击“余额 / 额度与充值”的快捷入口可进入官方后台查看，网页不读取或推测实际余额。</p><p class="hint">OpenAI 配置：在 <a href="https://supabase.com/dashboard/project/braarnzywbodyfdclodc/functions/secrets" target="_blank" rel="noopener noreferrer">Supabase 项目 Secrets</a> 中添加 OPENAI_API_KEY，值填你自己的 OpenAI API 密钥。不要写进 HTML；此页只填写原来的接口密码。检查连接只确认配置，不验证余额，也不提交识别任务。</p><p class="hint">OpenAI 当前采用 whisper-1 获取真实时间轴。官方计划于 2027年2月26日停用该模型，届时需要更新后台识别方案，不能保证永久免维护。</p><button id="clear">清除本机字幕记录</button></details>
+<div class="footer">腾讯云 / OpenAI 字幕识别 · 双服务版 2026.11.18</div>
+</main>
+<script>
+'use strict';
+const ENDPOINT='https://braarnzywbodyfdclodc.supabase.co/functions/v1/tencent-subtitles';
+const KEY='tencent_subtitles_v1', $=id=>document.getElementById(id);
+let file=null, mediaUrl='', cues=[], busy=false, controller=null, uploadXhr=null, runId=0, job=null, baseName='视频字幕', active=-1;
+function getSaved(k,fallback){try{return JSON.parse(localStorage.getItem(k))??fallback}catch{return fallback}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function remove(k){try{localStorage.removeItem(k)}catch{}}
+function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error)}
+function progress(value){$('progress').hidden=false;if(value==null)$('progress').removeAttribute('value');else $('progress').value=value}
+function setBusy(value){busy=value;for(const id of ['start','file','language','provider','check','resume','importSrt','clear','autoAudio','convertAudio'])$(id).disabled=value;$('pause').hidden=!value;$('resume').hidden=value||(!job&&!batch);$('resume').textContent=batch?'继续分段任务（'+batch.index+'/'+batch.parts.length+'）':'继续查询上次任务';$('start').textContent=value?'正在处理…':'开始识别字幕';$('downloadAudio').disabled=value||!convertedAudio}
+function requirePassword(){if(!$('password').value)throw new Error('请先输入以前语音转文字网页使用的接口密码');return $('password').value}
+async function api(action,params={},signal){const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','X-Transcribe-Password':requirePassword()},body:JSON.stringify({action,provider:$('provider').value,...params}),signal:signal||AbortSignal.timeout(action==='submit'?160000:70000)});let d;try{d=await r.json()}catch{throw new Error('后台没有返回有效结果，请检查连接')}if(!r.ok||d.error)throw new Error(d.error||'请求失败（'+r.status+'）');return d}
+function stamp(value,separator=','){let n=Math.max(0,Math.round(Number(value)*1000));const h=Math.floor(n/3600000);n%=3600000;const m=Math.floor(n/60000);n%=60000;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(Math.floor(n/1000)).padStart(2,'0')+separator+String(n%1000).padStart(3,'0')}
+function makeSrt(list=cues){return list.map((c,i)=>(i+1)+'\n'+stamp(c.start)+' --> '+stamp(c.end)+'\n'+c.text.trim()).join('\n\n')+(list.length?'\n':'')}
+function parseSrt(text){const blocks=text.replace(/^\uFEFF/,'').replace(/\r/g,'').trim().split(/\n\s*\n/),out=[];for(const b of blocks){if(/^WEBVTT/.test(b)&&!b.includes('-->'))continue;const lines=b.split('\n'),i=lines.findIndex(l=>l.includes('-->'));if(i<0)continue;const m=lines[i].match(/(?:(\d+):)?(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(?:(\d+):)?(\d{2}):(\d{2})[,.](\d{3})/);if(!m)throw new Error('有一条字幕时间格式不正确');const start=Number(m[1]||0)*3600+Number(m[2])*60+Number(m[3])+Number(m[4])/1000,end=Number(m[5]||0)*3600+Number(m[6])*60+Number(m[7])+Number(m[8])/1000,t=lines.slice(i+1).join('\n').trim();if(end<=start||!t)throw new Error('字幕结束时间必须晚于开始时间，且文字不能为空');out.push({start,end,text:t})}if(!out.length)throw new Error('没有找到有效的 SRT / VTT 字幕');return out.sort((a,b)=>a.start-b.start)}
+function persist(){save(KEY+'_result',{cues,baseName})}
+function render(){
+  $('rows').replaceChildren();active=-1;
+  cues.forEach((c,i)=>{const tr=document.createElement('tr');tr.dataset.index=i;const n=document.createElement('td');n.textContent=i+1;const time=document.createElement('td');time.textContent=stamp(c.start)+'\n'+stamp(c.end);time.style.whiteSpace='pre-line';const td=document.createElement('td'),input=document.createElement('textarea');input.value=c.text;input.setAttribute('aria-label','第'+(i+1)+'条字幕');input.addEventListener('input',()=>{c.text=input.value;$('srt').value=makeSrt();persist();active=-1;updateCaption()});td.append(input);tr.append(n,time,td);tr.addEventListener('click',e=>{if(e.target===input)return;if(mediaUrl){$('media').currentTime=c.start;$('media').play().catch(()=>{})}});$('rows').append(tr)});
+  $('srt').value=makeSrt();$('count').textContent=cues.length?cues.length+' 条字幕':'尚未生成字幕';$('tablewrap').hidden=!cues.length;for(const id of ['exportSrt','exportTxt','copy'])$(id).disabled=!cues.length;
+  $('caption').textContent=cues.length?'播放视频时，这里同步显示字幕。':'识别完成后，字幕会显示在这里。';persist();updateCaption();
+}
+function updateCaption(){const t=$('media').currentTime;let ix=-1;if(mediaUrl)ix=cues.findIndex(c=>t>=c.start&&t<c.end);if(ix===active)return;active=ix;$('caption').textContent=ix>=0?cues[ix].text:(cues.length?'…':'识别完成后，字幕会显示在这里。');$('rows').querySelectorAll('tr.active').forEach(x=>x.classList.remove('active'));if(ix>=0)$('rows').children[ix]?.classList.add('active')}
+$('media').addEventListener('timeupdate',updateCaption);
+function download(text,ext,type){const url=URL.createObjectURL(new Blob([text],{type})),a=document.createElement('a');a.href=url;a.download=baseName+'.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+$('exportSrt').onclick=()=>download(makeSrt(),'srt','application/x-subrip;charset=utf-8');$('exportTxt').onclick=()=>download(cues.map(c=>c.text).join('\n'),'txt','text/plain;charset=utf-8');
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(makeSrt());status('SRT 字幕已复制。')}catch{$('editor').open=true;$('srt').focus();$('srt').select();status('请长按或按 Command+C，复制已选中的字幕。')}};
+$('apply').onclick=()=>{try{cues=parseSrt($('srt').value);render();status('SRT 修改已应用并保存在本机。')}catch(e){status(e.message,true)}};
+$('importSrt').onchange=async()=>{const f=$('importSrt').files[0];if(!f)return;try{const parsed=parseSrt(await f.text());cues=parsed;baseName=f.name.replace(/\.[^.]+$/,'');render();status('字幕已导入。')}catch(e){status(e.message,true)}$('importSrt').value=''};
+$('clear').onclick=()=>{if(!confirm('清除本机保存的字幕？已导出的文件不受影响。'))return;cues=[];remove(KEY+'_result');render();status('本机字幕记录已清除。')};
+function updateProvider(){const isOpenAI=$('provider').value==='openai';$('providerHint').textContent=isOpenAI?'使用 OpenAI API 额度，和 ChatGPT Plus 分开。需要后台配置 API 密钥。':'沿用你之前的腾讯云配置，免费额度以账号实际资源包为准。';$('engineHint').textContent=isOpenAI?'OpenAI Whisper · 返回真实字幕时间轴；每段最多25MB，超出自动分段合并。':'腾讯云普通录音文件识别；不启用大模型或语义整理增值功能。';$('connection').textContent='';save(KEY+'_provider',$('provider').value)}
+$('provider').value=getSaved(KEY+'_provider','tencent');$('provider').onchange=updateProvider;updateProvider();
+const savedPassword=getSaved(KEY+'_password','');if(savedPassword){$('password').value=savedPassword;$('remember').checked=true}
+function remember(){if($('remember').checked)save(KEY+'_password',$('password').value);else remove(KEY+'_password')}
+$('remember').onchange=remember;$('password').onchange=remember;
+$('check').onclick=async()=>{try{$('check').disabled=true;$('connection').textContent='正在检查…';await api('check');remember();$('connection').textContent='连接成功：接口密码、'+($('provider').value==='openai'?'OpenAI':'腾讯云')+'密钥配置和上传空间可用。';status('连接成功，可以选择文件。检查连接不会提交识别任务。')}catch(e){$('connection').textContent='连接失败';status(e.message,true)}finally{$('check').disabled=false}};
+$('file').onchange=()=>{
+  batchFiles=null;convertedAudio=null;convertedSource=null;$('downloadAudio').disabled=true;$('audioInfo').textContent='选择视频后可先转音频，或在开始识别时自动转换。';
+  file=$('file').files[0]||null;if(mediaUrl)URL.revokeObjectURL(mediaUrl);mediaUrl='';$('media').removeAttribute('src');$('media').load();$('media').hidden=true;active=-1;
+  if(!file){$('fileInfo').textContent='还没有选择文件';return}
+  baseName=file.name.replace(/\.[^.]+$/,'');$('fileInfo').textContent=file.name+' · '+(file.size/1024/1024).toFixed(1)+' MB';mediaUrl=URL.createObjectURL(file);$('media').src=mediaUrl;$('media').hidden=false;
+  status(cues.length?'文件已选择。当前保留了上次字幕；开始新识别时将另行确认。':'文件已选择，可以开始识别。');
+};
+function xhr(method,url,headers,body,signal,onProgress){return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();uploadXhr=x;x.open(method,url);x.timeout=15*60*1000;Object.entries(headers).forEach(([k,v])=>x.setRequestHeader(k,v));const abort=()=>x.abort();signal.addEventListener('abort',abort,{once:true});const done=()=>{signal.removeEventListener('abort',abort);if(uploadXhr===x)uploadXhr=null};x.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(e.loaded,e.total)};x.onload=()=>{done();if(x.status>=200&&x.status<300)resolve(x);else{let msg='';try{const d=JSON.parse(x.responseText);msg=d.message||d.error||''}catch{}reject(new Error('上传失败（'+x.status+'）'+(msg?'：'+msg:'')))}};x.onerror=()=>{done();reject(new Error('上传网络中断，请检查网络后重试'))};x.ontimeout=()=>{done();reject(new Error('上传超时，请使用较小的视频或提取后的音频'))};x.onabort=()=>{done();reject(new DOMException('已暂停','AbortError'))};if(signal.aborted){x.abort();done();reject(new DOMException('已暂停','AbortError'));return}x.send(body)})}
+async function upload(f,p,signal){
+  const pct=n=>{progress(n);status('正在上传文件… '+Math.floor(n)+'%\n请保持网页打开。')};
+  if(f.size<=6*1024*1024){await xhr('PUT',p.uploadUrl,{'Content-Type':f.type||'application/octet-stream'},f,signal,(n,t)=>pct(n/t*100));return}
+  const metadata={bucketName:p.bucket,objectName:p.path,contentType:f.type||'application/octet-stream',cacheControl:'3600'};
+  const meta=Object.entries(metadata).map(([k,v])=>k+' '+btoa(v)).join(',');
+  const headers={'Tus-Resumable':'1.0.0','x-signature':p.token};
+  const created=await xhr('POST',p.tusEndpoint,{...headers,'Upload-Length':String(f.size),'Upload-Metadata':meta},null,signal);
+  const location=created.getResponseHeader('Location');if(!location)throw new Error('上传服务未返回续传地址');
+  const target=new URL(location,p.tusEndpoint);if(!target.hostname.endsWith('.supabase.co')||target.protocol!=='https:')throw new Error('上传地址无效');
+  let offset=Number(created.getResponseHeader('Upload-Offset')||0);
+  while(offset<f.size){const chunk=f.slice(offset,Math.min(f.size,offset+6*1024*1024));let ok=false;for(let retry=0;retry<3&&!ok;retry++){
+    try{const sent=await xhr('PATCH',target.href,{...headers,'Content-Type':'application/offset+octet-stream','Upload-Offset':String(offset)},chunk,signal,n=>pct((offset+n)/f.size*100));const next=Number(sent.getResponseHeader('Upload-Offset'));if(!Number.isFinite(next)||next<=offset||next>f.size)throw new Error('上传进度无效');offset=next;ok=true}
+    catch(e){if(e.name==='AbortError'||retry===2)throw e;await wait(1200,signal);const head=await xhr('HEAD',target.href,headers,null,signal);const current=Number(head.getResponseHeader('Upload-Offset'));if(!Number.isFinite(current)||current<offset||current>f.size)throw new Error('无法恢复上传进度');if(current>offset){offset=current;ok=true}}
+  }pct(offset/f.size*100)}
+}
+function wait(ms,signal){return new Promise((resolve,reject)=>{const abort=()=>{clearTimeout(timer);reject(new DOMException('已暂停','AbortError'))};const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve()},ms);if(signal.aborted)return abort();signal.addEventListener('abort',abort,{once:true})})}
+function finishResult(d,name){if(!Array.isArray(d.cues))throw new Error('后台没有返回字幕数组');cues=d.cues;baseName=name;job=null;remove(KEY+'_job');render();progress(100);status(cues.length?'识别完成，共 '+cues.length+' 条字幕，可以导出 SRT。'+(d.cleaned===false?'\n临时媒体清理失败，请检查云端存储。':''):'识别完成，但未检测到有效说话声。')}
+async function poll(signal,id){
+  let failures=0;progress(null);while(id===runId&&!signal.aborted){
+    try{const d=await api('status',{ticket:job.ticket},signal);failures=0;
+      if(d.status==='failed'){job=null;remove(KEY+'_job');throw new Error(d.error||'腾讯云识别失败')}
+      if(d.status==='done'){finishResult(d,job.name||baseName);return}
+      const mins=Math.floor((Date.now()-job.started)/1000);status((d.status==='waiting'?'任务已提交，正在排队…':'腾讯云正在识别…')+'\n已等待 '+Math.floor(mins/60)+' 分 '+mins%60+' 秒。刷新后可继续查询。');
+    }catch(e){if(e.name==='AbortError')throw e;if(!job||++failures>=3||/密码|凭证|超过23小时/.test(e.message))throw e;status('查询暂时中断，正在重试…\n'+e.message)}
+    await wait(5000,signal);
+  }
+}
+async function run(resume=false){
+  if((resume&&batch)||(!resume&&$('provider').value==='openai'))return runOpenAIBatch(resume);
+  if(busy)return;let prepared=null,submitted=false;const id=++runId;controller=new AbortController();const signal=controller.signal;
+  try{
+    requirePassword();if(resume&&!job)throw new Error('没有可恢复的任务');
+    if(!resume){if(!file)throw new Error('请先选择本地视频或音频');if(file.size>1024**3)throw new Error('文件不能超过1GB，请先使用较短的视频或提取音频');if(cues.length&&!confirm('开始识别新文件？现有字幕会保留到新结果返回；建议先导出。'))return;if(job&&!confirm('上次任务尚未取回结果。仍要新建任务？可能再次消耗识别额度。'))return}
+    setBusy(true);remember();if(!resume){
+      progress(0);status('正在检查连接…');const checked=await api('check',{},signal);
+      const duration=$('media').duration;if(Number.isFinite(duration)&&duration>5*3600)throw new Error('视频时长超过5小时，请分段识别');
+      const uploadFile=$('autoAudio').checked&&isVideoFile(file)?await audioForUpload(signal):file;
+      if(uploadFile.size>checked.maxBytes)throw new Error(($('provider').value==='openai'?'OpenAI 单次上限25MB。':'当前云端文件大小超限。')+' 当前上传文件为 '+(uploadFile.size/1024/1024).toFixed(1)+'MB，请缩短片段或选择腾讯云。');
+      prepared=await api('prepare',{name:uploadFile.name,size:uploadFile.size,language:$('language').value},signal);await upload(uploadFile,prepared,signal);progress(null);status($('provider').value==='openai'?'上传完成，OpenAI 正在识别…\n提交期间请勿关闭页面，通常需等待片刻。':'上传完成，正在提交腾讯云识别任务…');
+      // Do not abort a task submission: it may already have consumed quota on the server.
+      $('pause').disabled=true;job={ticket:prepared.ticket,name:baseName,started:Date.now(),stage:'uploaded',provider:$('provider').value};save(KEY+'_job',job);submitted=true;const d=await api('submit',{ticket:prepared.ticket});
+      if(d.status==='done'){finishResult(d,baseName);await api('cleanup',{ticket:prepared.ticket}).catch(()=>{});return;}
+      job={ticket:d.ticket,name:baseName,started:Date.now(),provider:$('provider').value};save(KEY+'_job',job);$('pause').disabled=false;
+    }
+    if(resume&&job.stage==='uploaded'){status('正在恢复上次提交…');$('pause').disabled=true;const uploadTicket=job.ticket;const d=await api('submit',{ticket:uploadTicket,provider:job.provider||'tencent'});if(d.status==='done'){finishResult(d,job.name||baseName);await api('cleanup',{ticket:uploadTicket}).catch(()=>{});return;}job={...job,ticket:d.ticket,stage:'submitted'};save(KEY+'_job',job);$('pause').disabled=false;}
+    await poll(signal,id);
+  }catch(e){if(e.name==='AbortError'){status(job?'已暂停查询。腾讯云仍会继续识别；点击“继续查询上次任务”取回字幕。':'上传已停止。')}else status((e instanceof TypeError?'网络连接失败，请检查网络和后台服务。':e.message)+(job?'\n任务已保留，可稍后继续查询。':''),true)}
+  finally{if(prepared&&!submitted){try{await api('cleanup',{ticket:prepared.ticket})}catch{}}controller=null;$('pause').disabled=false;setBusy(false)}
+}
+$('start').onclick=()=>run(false);$('resume').onclick=()=>run(true);$('pause').onclick=()=>{controller?.abort();uploadXhr?.abort()};
+// Extract a compressed audio track from a regular MP4/MOV without decoding video.
+// Chunk/sample tables and edit lists are preserved, keeping the original timeline.
+function mp4Boxes(bytes,begin=0,end=bytes.length){
+  const dv=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),out=[];let p=begin;
+  while(p+8<=end){let size=dv.getUint32(p),head=8;const type=String.fromCharCode(...bytes.subarray(p+4,p+8));if(size===1){if(p+16>end)throw new Error('视频容器头不完整');size=Number(dv.getBigUint64(p+8));head=16}if(size===0)size=end-p;if(!Number.isSafeInteger(size)||size<head||p+size>end)throw new Error('视频容器结构不完整');out.push({type,start:p,end:p+size,head,body:p+head});p+=size}return out;
+}
+function mp4Join(parts){const b=new Uint8Array(parts.reduce((n,x)=>n+x.length,0));let p=0;for(const x of parts){b.set(x,p);p+=x.length}return b}
+function mp4Box(type,parts){const body=mp4Join(parts),b=new Uint8Array(body.length+8);new DataView(b.buffer).setUint32(0,b.length);for(let i=0;i<4;i++)b[4+i]=type.charCodeAt(i);b.set(body,8);return b}
+async function extractMp4Audio(source,signal,onProgress=()=>{}){
+  const abort=()=>{if(signal?.aborted)throw new DOMException('已停止转换','AbortError')};abort();let p=0,moov=null,fragmented=false;
+  while(p+8<=source.size){abort();const h=new Uint8Array(await source.slice(p,p+16).arrayBuffer()),v=new DataView(h.buffer);let n=v.getUint32(0),head=8;const t=String.fromCharCode(...h.subarray(4,8));if(n===1){n=Number(v.getBigUint64(8));head=16}if(n===0)n=source.size-p;if(!Number.isSafeInteger(n)||n<head||p+n>source.size)throw new Error('视频文件结构不完整，无法提取音频');if(t==='moov'){if(n>64*1024*1024)throw new Error('视频索引过大，请先分段');moov=new Uint8Array(await source.slice(p,p+n).arrayBuffer())}if(t==='moof')fragmented=true;p+=n}
+  if(!moov||fragmented)throw new Error('此视频不支持快速转音频，请使用普通 MP4 / MOV 文件，或先在电脑转换为 M4A');
+  const root=mp4Boxes(moov)[0],children=mp4Boxes(moov,root.body,root.end);if(children.some(x=>x.type==='mvex'))throw new Error('分片 MP4 暂不支持快速转音频');
+  let track=null;
+  for(const t of children.filter(x=>x.type==='trak')){const mdia=mp4Boxes(moov,t.body,t.end).find(x=>x.type==='mdia');if(!mdia)continue;const h=mp4Boxes(moov,mdia.body,mdia.end).find(x=>x.type==='hdlr');if(h&&String.fromCharCode(...moov.subarray(h.body+8,h.body+12))==='soun'){track=t;break}}
+  if(!track)throw new Error('视频里没有找到音频轨道');
+  const child=(parent,type)=>{const b=mp4Boxes(moov,parent.body,parent.end).find(x=>x.type===type);if(!b)throw new Error('该视频缺少 '+type+' 音频索引');return b};
+  const stbl=child(child(child(track,'mdia'),'minf'),'stbl'),tables=mp4Boxes(moov,stbl.body,stbl.end),sizes=tables.find(x=>x.type==='stsz'),sc=tables.find(x=>x.type==='stsc'),co=tables.find(x=>x.type==='stco'||x.type==='co64');
+  if(!sizes||!sc||!co)throw new Error('该视频的音频索引格式暂不支持');
+  const view=new DataView(moov.buffer,moov.byteOffset,moov.byteLength),need=(box,offset,length)=>{if(offset+length>box.end)throw new Error('音频索引数据不完整')};
+  need(sizes,sizes.body,12);need(sc,sc.body,8);need(co,co.body,8);
+  const fixed=view.getUint32(sizes.body+4),sampleCount=view.getUint32(sizes.body+8),chunkCount=view.getUint32(co.body+4),entryCount=view.getUint32(sc.body+4),width=co.type==='co64'?8:4;
+  need(sc,sc.body+8,entryCount*12);need(co,co.body+8,chunkCount*width);if(!fixed)need(sizes,sizes.body+12,sampleCount*4);
+  if(!chunkCount||!entryCount||!sampleCount)throw new Error('音频轨道没有有效数据');
+  const entries=[];for(let i=0;i<entryCount;i++)entries.push({first:view.getUint32(sc.body+8+i*12),count:view.getUint32(sc.body+12+i*12)});
+  if(entries[0].first!==1||entries.some((x,i)=>!x.count||(i&&x.first<=entries[i-1].first)))throw new Error('音频分块索引无效');
+  let ei=0,si=0,total=0;const chunks=[];
+  for(let i=0;i<chunkCount;i++){abort();while(ei+1<entries.length&&entries[ei+1].first<=i+1)ei++;const count=entries[ei].count;if(si+count>sampleCount)throw new Error('音频采样数量不一致');let size=0;if(fixed)size=fixed*count;else for(let j=0;j<count;j++)size+=view.getUint32(sizes.body+12+(si+j)*4);si+=count;const offset=width===8?Number(view.getBigUint64(co.body+8+i*8)):view.getUint32(co.body+8+i*4);if(!Number.isSafeInteger(offset)||offset<0||offset+size>source.size)throw new Error('音频数据位置无效');chunks.push({offset,size});total+=size}
+  if(si!==sampleCount)throw new Error('音频采样数量不完整');
+  if(total+8>0xffffffff)throw new Error('音频轨道过大，请先分段');
+  const ftyp=mp4Box('ftyp',[new Uint8Array([77,52,65,32,0,0,2,0,77,52,65,32,105,115,111,109,109,112,52,50])]);
+  const containers=new Set(['trak','mdia','minf','stbl']);let newOffsets=[];
+  function rewrite(b){if(b.start===co.start){const payload=new Uint8Array(8+chunkCount*width);payload.set(moov.subarray(b.body,b.body+8));const dv=new DataView(payload.buffer);for(let i=0;i<chunkCount;i++){if(width===8)dv.setBigUint64(8+i*8,BigInt(newOffsets[i]||0));else dv.setUint32(8+i*4,newOffsets[i]||0)}return mp4Box(b.type,[payload])}if(containers.has(b.type))return mp4Box(b.type,mp4Boxes(moov,b.body,b.end).map(rewrite));return moov.slice(b.start,b.end)}
+  const mvhd=children.find(x=>x.type==='mvhd');if(!mvhd)throw new Error('视频缺少时长信息');
+  const build=()=>mp4Box('moov',[moov.slice(mvhd.start,mvhd.end),rewrite(track)]);let outputMoov=build(),offset=ftyp.length+outputMoov.length+8;
+  newOffsets=chunks.map(c=>{const n=offset;offset+=c.size;return n});outputMoov=build();
+  const mdat=new Uint8Array(8);new DataView(mdat.buffer).setUint32(0,total+8);mdat.set([109,100,97,116],4);
+  const parts=[ftyp,outputMoov,mdat];for(let i=0;i<chunks.length;i++){abort();const c=chunks[i];parts.push(source.slice(c.offset,c.offset+c.size));if(i%200===0){onProgress(i/chunks.length);await new Promise(r=>setTimeout(r,0))}}
+  onProgress(1);return new File(parts,source.name.replace(/\.[^.]+$/,'')+'.m4a',{type:'audio/mp4'});
+}
+function isVideoFile(f){return !!f&&(f.type.startsWith('video/')||/\.(mp4|mov|m4v|mkv|avi|webm|flv|3gp)$/i.test(f.name))}
+let convertedAudio=null,convertedSource=null;
+async function audioForUpload(signal){
+  if(!file)throw new Error('请先选择视频');if(!isVideoFile(file))return file;
+  if(convertedAudio&&convertedSource===file)return convertedAudio;
+  if(!/\.(mp4|mov|m4v)$/i.test(file.name))throw new Error('自动转音频目前支持普通 MP4 / MOV / M4V；其他格式请先转成 MP4 或音频');
+  status('正在本机提取音频…\n只提取声音，不上传视频，不重新压缩声音。');progress(null);
+  const audio=await extractMp4Audio(file,signal,n=>{status('正在本机提取音频… '+Math.round(n*100)+'%');progress(n*100)});
+  convertedAudio=audio;convertedSource=file;const before=(file.size/1024/1024).toFixed(2),after=(audio.size/1024/1024).toFixed(2),saved=(1-audio.size/file.size)*100;
+  $('audioInfo').textContent='视频 '+before+' MB → 音频 '+after+' MB'+(saved>0?'，减少 '+saved.toFixed(1)+'%':'（此文件音轨占比较高，大小接近原文件）');$('downloadAudio').disabled=false;
+  return audio;
+}
+$('convertAudio').onclick=async()=>{if(busy)return;controller=new AbortController();setBusy(true);try{if(!file||!isVideoFile(file))throw new Error('请选择一个 MP4 / MOV / M4V 视频');await audioForUpload(controller.signal);progress(100);status('音频已提取，可以下载音频，或直接开始识别。')}catch(e){status(e.name==='AbortError'?'已停止转换。':e.message,e.name!=='AbortError')}finally{controller=null;setBusy(false)}};
+$('downloadAudio').onclick=()=>{if(!convertedAudio)return;const u=URL.createObjectURL(convertedAudio),a=document.createElement('a');a.href=u;a.download=convertedAudio.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)};
+
+// Split at audio sample boundaries. Each output is an independent playable M4A.
+async function splitM4a(source,maxBytes,signal){
+ const stop=()=>{if(signal.aborted)throw new DOMException('已停止分段','AbortError')};let p=0,moov;while(p+8<=source.size){stop();const h=new Uint8Array(await source.slice(p,p+16).arrayBuffer()),v=new DataView(h.buffer);let n=v.getUint32(0);const t=String.fromCharCode(...h.subarray(4,8));if(n===1)n=Number(v.getBigUint64(8));if(!n)n=source.size-p;if(n<8||p+n>source.size)throw new Error('音频容器不完整');if(t==='moov')moov=new Uint8Array(await source.slice(p,p+n).arrayBuffer());if(t==='moof')throw new Error('分片音频需先解码再分段');p+=n}if(!moov)throw new Error('未找到音频索引');
+ const view=new DataView(moov.buffer),root=mp4Boxes(moov)[0],top=mp4Boxes(moov,root.body,root.end),mvhd=top.find(x=>x.type==='mvhd');
+ const ch=(b,t)=>mp4Boxes(moov,b.body,b.end).find(x=>x.type===t);
+ const track=top.filter(x=>x.type==='trak').find(t=>{const m=ch(t,'mdia'),h=m&&ch(m,'hdlr');return h&&String.fromCharCode(...moov.subarray(h.body+8,h.body+12))==='soun'});if(!mvhd||!track)throw new Error('没有有效音频轨道');
+ const mdia=ch(track,'mdia'),mdhd=ch(mdia,'mdhd'),tkhd=ch(track,'tkhd'),minf=ch(mdia,'minf'),stbl=ch(minf,'stbl'),tables=mp4Boxes(moov,stbl.body,stbl.end);
+ const stsz=ch(stbl,'stsz'),stsc=ch(stbl,'stsc'),stco=tables.find(x=>x.type==='stco'||x.type==='co64'),stts=ch(stbl,'stts');if(!stsz||!stsc||!stco||!stts||tables.some(x=>['ctts','stz2','senc','saiz','saio'].includes(x.type)))throw new Error('该音轨需要解码后分段');
+ const u32=o=>view.getUint32(o),timescale=b=>u32(b.body+(moov[b.body]===1?20:12));const ts=timescale(mdhd),mts=timescale(mvhd);if(!ts||!mts)throw new Error('音频时基无效');
+ const version=moov[tkhd.body],trackTicks=version===1?Number(view.getBigUint64(tkhd.body+28)):u32(tkhd.body+20),trackSeconds=trackTicks/mts;
+ const n=u32(stsz.body+8),fixed=u32(stsz.body+4),chunkCount=u32(stco.body+4),sampleSizes=new Uint32Array(n),offsets=new Float64Array(n),deltas=new Uint32Array(n),prefix=new Float64Array(n+1);
+ for(let i=0;i<n;i++)sampleSizes[i]=fixed||u32(stsz.body+12+i*4);
+ let sample=0;for(let i=0;i<u32(stts.body+4);i++){const count=u32(stts.body+8+i*8),delta=u32(stts.body+12+i*8);if(sample+count>n)throw new Error('音频时长索引无效');deltas.fill(delta,sample,sample+count);sample+=count}if(sample!==n)throw new Error('音频时长索引不完整');for(let i=0;i<n;i++)prefix[i+1]=prefix[i]+deltas[i];
+ const entries=[];for(let i=0;i<u32(stsc.body+4);i++)entries.push({first:u32(stsc.body+8+i*12),count:u32(stsc.body+12+i*12),description:u32(stsc.body+16+i*12)});
+ let ei=0;sample=0;for(let i=0;i<chunkCount;i++){stop();while(ei+1<entries.length&&entries[ei+1].first<=i+1)ei++;if(entries[ei].description!==1)throw new Error('多种音频编码暂不支持直接分段');let offset=stco.type==='co64'?Number(view.getBigUint64(stco.body+8+i*8)):u32(stco.body+8+i*4);for(let j=0;j<entries[ei].count;j++){if(sample>=n)throw new Error('音频分块索引错误');offsets[sample]=offset;offset+=sampleSizes[sample++]}if(offset>source.size)throw new Error('音频数据不完整')}if(sample!==n)throw new Error('音频采样索引不完整');
+ let delay=0,skip=0;const edts=ch(track,'edts'),elst=edts&&ch(edts,'elst');if(elst){const ev=moov[elst.body],count=u32(elst.body+4);let normal=0;for(let i=0;i<count;i++){const off=elst.body+8+i*(ev===1?20:12),duration=ev===1?Number(view.getBigUint64(off)):u32(off),media=ev===1?Number(view.getBigInt64(off+8)):view.getInt32(off+4);if(media===-1&&normal===0)delay+=duration/mts;else if(media>=0&&normal++===0)skip=media;else throw new Error('复杂音轨编辑需先解码再分段')}}
+ const shift=delay-skip/ts,groups=[];let begin=0,bytes=0;const budget=Math.max(1024,maxBytes-1024*1024);
+ for(let i=0;i<n;i++){if(i>begin&&(bytes+sampleSizes[i]>budget||(prefix[i]-prefix[begin])/ts>=600)){groups.push({begin,end:i});begin=i;bytes=0}bytes+=sampleSizes[i]}if(begin<n)groups.push({begin,end:n});
+ const word=(...values)=>{const b=new Uint8Array(values.length*4),dv=new DataView(b.buffer);values.forEach((v,i)=>dv.setUint32(i*4,v));return b};
+ function durationBox(b,ticks,isTrack=false){const out=moov.slice(b.start,b.end),dv=new DataView(out.buffer),v=moov[b.body],off=(b.body-b.start)+(isTrack?(v===1?28:20):(v===1?24:16));if(v===1)dv.setBigUint64(off,BigInt(Math.round(ticks)));else dv.setUint32(off,Math.round(ticks));return out}
+ const ftyp=mp4Box('ftyp',[new Uint8Array([77,52,65,32,0,0,2,0,77,52,65,32,105,115,111,109,109,112,52,50])]),out=[];
+ for(let g=0;g<groups.length;g++){stop();const group=groups[g],b=group.begin,e=group.end,count=e-b;
+  const globalStart=g===0?0:Math.max(0,prefix[b]/ts+shift),globalEnd=Math.min(trackSeconds||Infinity,Math.max(globalStart,prefix[e]/ts+shift)),seconds=globalEnd-globalStart;if(seconds<=0)continue;
+  const sz=new Uint8Array(12+count*4),szv=new DataView(sz.buffer);szv.setUint32(8,count);for(let i=0;i<count;i++)szv.setUint32(12+i*4,sampleSizes[b+i]);
+  const runs=[];for(let i=b;i<e;i++){if(runs.length&&runs[runs.length-1][1]===deltas[i])runs[runs.length-1][0]++;else runs.push([1,deltas[i]])}const timeBox=mp4Box('stts',[word(0,runs.length,...runs.flat())]);
+  const editEntries=[];if(g===0&&delay>0)editEntries.push(word(Math.round(delay*mts),0xffffffff,0x00010000));editEntries.push(word(Math.round((seconds-(g===0?delay:0))*mts),g===0?skip:0,0x00010000));const edit=mp4Box('edts',[mp4Box('elst',[word(0,editEntries.length),...editEntries])]);let chunkOffset=0;
+  function rebuild(box){if(box.type==='edts')return edit;if(box.start===tkhd.start)return durationBox(box,seconds*mts,true);if(box.start===mdhd.start)return durationBox(box,prefix[e]-prefix[b]);if(box.type==='stsz')return mp4Box('stsz',[sz]);if(box.type==='stts')return timeBox;if(box.type==='stsc')return mp4Box('stsc',[word(0,1,1,count,1)]);if(box.type==='stco'||box.type==='co64')return mp4Box('stco',[word(0,1,chunkOffset)]);if(['stss','sdtp','sgpd','sbgp'].includes(box.type))return new Uint8Array();if(['trak','mdia','minf','stbl'].includes(box.type)){const parts=mp4Boxes(moov,box.body,box.end).map(rebuild);if(box.type==='trak'&&!edts)parts.push(edit);return mp4Box(box.type,parts)}return moov.slice(box.start,box.end)}
+  const build=()=>mp4Box('moov',[durationBox(mvhd,seconds*mts),rebuild(track)]);let meta=build();chunkOffset=ftyp.length+meta.length+8;meta=build();let size=0;const payload=[];
+  // Coalesce consecutive sample ranges to keep large-file Blob construction cheap.
+  let rangeStart=offsets[b],rangeEnd=rangeStart;for(let i=b;i<e;i++){if(offsets[i]!==rangeEnd){payload.push(source.slice(rangeStart,rangeEnd));rangeStart=offsets[i]}rangeEnd=offsets[i]+sampleSizes[i];size+=sampleSizes[i]}payload.push(source.slice(rangeStart,rangeEnd));
+  const mdat=word(size+8,0x6d646174),part=new File([ftyp,meta,mdat,...payload],source.name.replace(/\.[^.]+$/,'')+'_part'+String(g+1).padStart(2,'0')+'.m4a',{type:'audio/mp4'});if(part.size>maxBytes)throw new Error('分段仍超过上传限制，请重新转换音频');out.push({file:part,offset:globalStart,duration:seconds});
+  await new Promise(r=>setTimeout(r,0));
+ }
+ return out;
+}
+async function splitDecodedAudio(source,maxBytes,signal){
+ const Audio=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!Audio)throw new Error('浏览器不支持此格式自动分段，请改用 Safari / Chrome，或转换为 M4A');
+ status('正在本机解码音频以分段…\n长音频建议在电脑操作，请保持页面打开。');const ctx=new Audio(1,1,16000),buffer=await ctx.decodeAudioData(await source.arrayBuffer());if(signal.aborted)throw new DOMException('已停止','AbortError');
+ const rate=buffer.sampleRate,frames=Math.min(Math.floor((maxBytes-44)/2),600*rate),out=[];
+ for(let start=0;start<buffer.length;start+=frames){if(signal.aborted)throw new DOMException('已停止','AbortError');const length=Math.min(frames,buffer.length-start),data=new ArrayBuffer(44+length*2),v=new DataView(data);const str=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};str(0,'RIFF');v.setUint32(4,36+length*2,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,length*2,true);
+  const channels=[];for(let c=0;c<buffer.numberOfChannels;c++)channels.push(buffer.getChannelData(c));for(let i=0;i<length;i++){let value=0;for(const c of channels)value+=c[start+i];value=Math.max(-1,Math.min(1,value/channels.length));v.setInt16(44+i*2,value<0?value*32768:value*32767,true)}
+  out.push({file:new File([data],source.name.replace(/\.[^.]+$/,'')+'_part'+(out.length+1)+'.wav',{type:'audio/wav'}),offset:start/rate,duration:length/rate});await new Promise(r=>setTimeout(r,0));
+ }return out;
+}
+async function planAudioParts(source,maxBytes,signal){
+ const safe=Math.min(24000000,maxBytes);if(source.size<=safe)return [{file:source,offset:0,duration:0}];
+ status('文件较大，正在自动分段…');progress(null);
+ if(/\.(m4a|mp4|mov|m4v)$/i.test(source.name)){try{return await splitM4a(source,safe,signal)}catch(e){if(e.name==='AbortError')throw e;status('此音轨需解码后分段…')}}
+ return await splitDecodedAudio(source,safe,signal);
+}
+
+let batch=null,batchFiles=null;
+function saveBatch(){if(batch)save(KEY+'_batch',batch);else remove(KEY+'_batch')}
+function fileIdentity(f){return {name:f.name,size:f.size,lastModified:f.lastModified||0}}
+function sameSource(a,f){return a&&f&&a.name===f.name&&a.size===f.size}
+function batchCues(cues,part){const offset=Number(part.offset)||0,end=part.duration>0?offset+part.duration:Infinity;return cues.map(c=>({start:Math.max(offset,Number(c.start)+offset),end:Math.min(end,Number(c.end)+offset),text:String(c.text||'')})).filter(c=>c.text&&Number.isFinite(c.start)&&Number.isFinite(c.end)&&c.end>c.start)}
+async function runOpenAIBatch(resume){
+ if(busy)return;let prepared=null,uploaded=false;controller=new AbortController();const signal=controller.signal;runId++;
+ try{
+  requirePassword();if(!file)throw new Error(resume?'请先重新选择上次的原视频 / 音频，再继续分段任务。':'请先选择本地视频或音频');
+  if(file.size>1024**3)throw new Error('原文件不能超过1GB，请先使用较短的视频');
+  if(resume){if(!batch)throw new Error('没有可恢复的分段任务');if(!sameSource(batch.source,file))throw new Error('请选择上次的同一个文件：'+batch.source.name);}
+  else {if(cues.length&&!confirm('开始新识别？已有字幕会保留到新结果返回，建议先导出。'))return;if(job&&!confirm('上次任务尚未取回结果，仍要开始新任务？建议先取回旧结果。'))return;if(batch&&!confirm('上次分段任务还未完成，仍要开始新的任务？'))return;}
+  setBusy(true);remember();status('正在检查 OpenAI 连接…');const checked=await api('check',{provider:'openai'},signal);
+  const selectedLanguage=resume?batch.language:$('language').value;const auto=resume?batch.autoAudio:$('autoAudio').checked;
+  let source=auto&&isVideoFile(file)?await audioForUpload(signal):file;
+  if(!resume||!batchFiles){batchFiles=await planAudioParts(source,checked.maxBytes,signal);if(!batchFiles.length)throw new Error('没有可识别的音频');}
+  if(!resume){batch={source:fileIdentity(file),name:baseName,provider:'openai',language:selectedLanguage,autoAudio:auto,index:0,parts:batchFiles.map(p=>({name:p.file.name,size:p.file.size,offset:p.offset,duration:p.duration})),cues:[],ticket:null,started:Date.now()};saveBatch()}
+  if(batch.parts.length!==batchFiles.length||batch.parts.some((p,i)=>p.size!==batchFiles[i].file.size||Math.abs(p.offset-batchFiles[i].offset)>.01))throw new Error('重新生成的分段与旧任务不一致，请使用原文件或开始新任务');
+  $('batchInfo').textContent='自动分成 '+batch.parts.length+' 段，每段不超过24MB；已完成 '+batch.index+' / '+batch.parts.length+' 段。';
+  while(batch.index<batch.parts.length){
+   if(signal.aborted)throw new DOMException('已暂停','AbortError');const index=batch.index,part=batchFiles[index];
+   status('正在处理第 '+(index+1)+' / '+batch.parts.length+' 段…');
+   if(!batch.ticket){
+    prepared=await api('prepare',{provider:'openai',language:batch.language,name:part.file.name,size:part.file.size},signal);uploaded=false;await upload(part.file,prepared,signal);
+    batch.ticket=prepared.ticket;saveBatch();uploaded=true;
+   }
+   progress(null);status('OpenAI 正在识别第 '+(index+1)+' / '+batch.parts.length+' 段…\n已完成的段落不会重新提交。');$('pause').disabled=true;
+   const uploadTicket=batch.ticket;let d;try{d=await api('submit',{provider:'openai',ticket:uploadTicket})}finally{$('pause').disabled=false}
+   if(d.status!=='done'||!Array.isArray(d.cues))throw new Error('OpenAI 未返回该段字幕，请继续查询当前段');
+   batch.cues.push(...batchCues(d.cues,batch.parts[index]));batch.index++;batch.ticket=null;saveBatch();
+   cues=batch.cues.slice().sort((a,b)=>a.start-b.start);baseName=batch.name;render();$('count').textContent=cues.length+' 条字幕（'+batch.index+'/'+batch.parts.length+' 段）';
+   await api('cleanup',{ticket:uploadTicket,provider:'openai'}).catch(()=>{});prepared=null;uploaded=false;
+   $('batchInfo').textContent='已完成 '+batch.index+' / '+batch.parts.length+' 段，字幕已按原视频时间合并。';
+  }
+  const final={cues:batch.cues.slice().sort((a,b)=>a.start-b.start)},name=batch.name;batch=null;batchFiles=null;saveBatch();finishResult(final,name);
+ }catch(e){status((e.name==='AbortError'?'已暂停分段处理。':e.message)+(batch?'\n已完成 '+batch.index+' / '+batch.parts.length+' 段。重新选择同一文件后，可继续剩余段落。':''),e.name!=='AbortError')}
+ finally{if(prepared&&!uploaded)await api('cleanup',{ticket:prepared.ticket,provider:'openai'}).catch(()=>{});controller=null;$('pause').disabled=false;setBusy(false)}
+}
+
+const saved=getSaved(KEY+'_result',null);if(saved&&Array.isArray(saved.cues)){cues=saved.cues;baseName=saved.baseName||baseName;render()}
+batch=getSaved(KEY+'_batch',null);if(batch&&Date.now()-batch.started>23*3600000){batch=null;remove(KEY+'_batch')}
+job=getSaved(KEY+'_job',null);if(job&&Date.now()-job.started>23*3600000){job=null;remove(KEY+'_job')}setBusy(false);if(job)status('发现上次尚未取回结果的识别任务。输入接口密码后，点击“继续查询上次任务”。');
+if(batch)status('发现未完成的分段任务（已完成 '+batch.index+'/'+batch.parts.length+' 段）。请重新选择 '+batch.source.name+'，然后点击继续分段任务。');
+window.addEventListener('beforeunload',e=>{if(busy){e.preventDefault();e.returnValue=''}});
+</script></body></html>
